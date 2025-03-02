@@ -5,7 +5,7 @@ dotenv.config();
 
 const config = {
   deepSeek: {
-    apiKey: process.env.DEEPSEEK_API_KEY || 'sk-5dff92c381d8431bba1416eedc151283', // DeepSeek API key
+    apiKey: process.env.DEEPSEEK_API_KEY || 'your-deepseek-api-key',
     baseUrl: "https://api.deepseek.com",
     model: "deepseek-chat", // Model you want to use
   },
