@@ -2,6 +2,22 @@ const axios = require('axios');
 const { getWeatherInfo } = require('./aiController');
 const config = require('./config');
 
+const continentMap = {
+  "AF": "Africa",
+  "AN": "Antarctica",
+  "AS": "Asia",
+  "EU": "Europe",
+  "NA": "North America",
+  "OC": "Oceania",
+  "SA": "South America"
+};
+
+const getContinent = (countryCode) => {
+  // This is a simplified example. You might need a more comprehensive mapping.
+  const continentCode = countryCode.slice(0, 2).toUpperCase();
+  return continentMap[continentCode] || "Unknown";
+};
+
 const processWeatherData = async (req, res, next) => {
   try {
     const { city } = req.body;
@@ -30,8 +46,10 @@ const processWeatherData = async (req, res, next) => {
     const temperature = weatherResponse.data.current.temp_c;
     const feelsLike = weatherResponse.data.current.feelslike_c;
     const country = weatherResponse.data.location.country;
+    const countryCode = weatherResponse.data.location.country_code;
+    const continent = getContinent(countryCode);
 
-    console.log(`Received weather info: temp=${temperature}, feelsLike=${feelsLike}, country=${country}`);
+    console.log(`Received weather info: temp=${temperature}, feelsLike=${feelsLike}, country=${country}, continent=${continent}`);
 
     // Fetch recommendations from AI
     const { recommendation } = await getWeatherInfo(city);
@@ -43,6 +61,7 @@ const processWeatherData = async (req, res, next) => {
       data: {
         city,
         country,
+        continent,
         temperature,
         feelsLike,
         emoji,
