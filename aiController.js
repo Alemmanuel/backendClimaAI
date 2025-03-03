@@ -49,6 +49,7 @@ Format the response as JSON with keys "temperature", "feelsLike", and "recommend
     let content = response.data.choices[0].message.content.trim();
     console.log("Raw content from API:", content);
 
+    // Limpiar delimitadores de código en formato Markdown
     if (content.startsWith("```json")) {
       content = content.slice(7, -3).trim();
     }

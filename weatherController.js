@@ -1,4 +1,6 @@
+const axios = require('axios');
 const { getWeatherInfo } = require('./aiController');
+const config = require('./config');
 
 const processWeatherData = async (req, res, next) => {
   try {
@@ -13,9 +15,25 @@ const processWeatherData = async (req, res, next) => {
 
     console.log(`Processing weather data for city: ${city}`);
 
-    const { temperature, feelsLike, recommendation } = await getWeatherInfo(city);
+    // Fetch weather data from Weather API
+    const weatherResponse = await axios.get(`${config.weather.baseUrl}/current.json`, {
+      params: {
+        key: config.weather.apiKey,
+        q: city,
+      },
+    });
 
-    console.log(`Received weather info: temp=${temperature}, feelsLike=${feelsLike}, recommendation=${recommendation}`);
+    if (!weatherResponse.data) {
+      throw new Error("Failed to fetch weather data from Weather API");
+    }
+
+    const temperature = weatherResponse.data.current.temp_c;
+    const feelsLike = weatherResponse.data.current.feelslike_c;
+
+    console.log(`Received weather info: temp=${temperature}, feelsLike=${feelsLike}`);
+
+    // Fetch recommendations from AI
+    const { recommendation } = await getWeatherInfo(city);
 
     const emoji = getWeatherEmoji(temperature);
 
