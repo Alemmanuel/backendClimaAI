@@ -29,8 +29,9 @@ const processWeatherData = async (req, res, next) => {
 
     const temperature = weatherResponse.data.current.temp_c;
     const feelsLike = weatherResponse.data.current.feelslike_c;
+    const country = weatherResponse.data.location.country;
 
-    console.log(`Received weather info: temp=${temperature}, feelsLike=${feelsLike}`);
+    console.log(`Received weather info: temp=${temperature}, feelsLike=${feelsLike}, country=${country}`);
 
     // Fetch recommendations from AI
     const { recommendation } = await getWeatherInfo(city);
@@ -41,6 +42,7 @@ const processWeatherData = async (req, res, next) => {
       success: true,
       data: {
         city,
+        country,
         temperature,
         feelsLike,
         emoji,
